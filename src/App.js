@@ -1,24 +1,27 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import { oneDark } from "@codemirror/theme-one-dark";
+import CodeMirror from "@uiw/react-codemirror";
+import { java } from "@codemirror/lang-java";
+import { javascript } from "@codemirror/lang-javascript";
+import { useState } from "react";
 
 function App() {
+  const [code, setCode] = useState("console.log(hello)");
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+
+      <button onClick={()=> setCode("test")}> button</button>
+      <CodeMirror
+        value={code}
+        height="100%"
+        theme={oneDark}
+        extensions={[java(), javascript({ jsx: true })]}
+        onChange={(value, viewUpdate) => {
+          console.log("value:", value);
+        }}
+      />
+    </>
   );
 }
 
