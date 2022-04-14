@@ -1,28 +1,23 @@
-import "./App.css";
-import { oneDark } from "@codemirror/theme-one-dark";
-import CodeMirror from "@uiw/react-codemirror";
-import { java } from "@codemirror/lang-java";
-import { javascript } from "@codemirror/lang-javascript";
-import { useState } from "react";
+import React from 'react';
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate
+} from "react-router-dom"
+import { v4 as uuidV4 } from "uuid"
+import Editor from './Editor';
 
 function App() {
-  const [code, setCode] = useState("console.log(hello)");
-
   return (
-    <>
-
-      <button onClick={()=> setCode("test")}> button</button>
-      <CodeMirror
-        value={code}
-        height="100%"
-        theme={oneDark}
-        extensions={[java(), javascript({ jsx: true })]}
-        onChange={(value, viewUpdate) => {
-          console.log("value:", value);
-        }}
-      />
-    </>
-  );
+    <Router>
+      <Routes>
+      {/* load main screen redirects to random document */}
+      <Route path="/" element={<Navigate to={`/documents/${uuidV4()}`}/>} />
+      {/* when on document with a id then enter the notepad*/}
+      <Route path="/documents/:id" element={<Editor/>}/>
+      </Routes>
+    </Router>
+  )
 }
-
 export default App;
