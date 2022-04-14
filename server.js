@@ -14,11 +14,15 @@ io.on("connection", (socket) => {
   console.log("a user connected");
 
   socket.on("get-document", (documentId) => {
-    // send changes to the socket
+
+     // join room 
+    socket.join(documentId);
+
+    // send changes to the other sockets connected
     socket.on("send-changes", (code) => {
       socket.broadcast.to(documentId).emit("receive-changes", code);
-      console.log(code)
     });
+
   });
 
   socket.on("disconnect", () => {
