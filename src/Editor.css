@@ -1,0 +1,23 @@
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex: 1;
+    height: 1080px;
+    font-size: 14px;
+}
+
+.header {
+    background-color: #161b22;
+    color: #c9d1d9;
+    padding: 10px;
+}
+
+.share {
+    background-color: #161b22;
+    color: #c9d1d9;
+    text-align: center;
+  
+}
+
+/* 0d1117 */

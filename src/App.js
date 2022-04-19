@@ -5,7 +5,7 @@ import {
   Route,
   Navigate
 } from "react-router-dom"
-import { v4 as uuidV4 } from "uuid"
+import Creator from './Creator';
 import Editor from './Editor';
 
 function App() {
@@ -13,9 +13,9 @@ function App() {
     <Router>
       <Routes>
       {/* load main screen redirects to random document */}
-      <Route path="/" element={<Navigate to={`/documents/${uuidV4()}`}/>} />
+      <Route path="/" element={<Creator/>} />
       {/* when on document with a id then enter the notepad*/}
-      <Route path="/documents/:id" element={<Editor/>}/>
+      <Route path="/code/:id" element={<Editor/>}/>
       </Routes>
     </Router>
   )
