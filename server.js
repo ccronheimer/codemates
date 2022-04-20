@@ -20,12 +20,15 @@ const io = require("socket.io")(server, {
 });
 
 io.on("connection", (socket) => {
-  console.log("a user connected");
+  console.log(socket.client.conn.server.clientsCount + " users connected");
 
   socket.on("get-document", (documentId) => {
     // join room
     socket.join(documentId);
 
+    socket.broadcast
+      .to(documentId)
+      .emit("count", socket.client.conn.server.clientsCount);
     // send changes to the other sockets connected
     socket.on("send-changes", (code) => {
       socket.broadcast.to(documentId).emit("receive-changes", code);
@@ -41,21 +44,23 @@ setInterval(() => {
   io.emit("time", new Date());
 }, 1000);
 
-// get a code document 
+// get a code document
 app.get("/api/v1/code/:id", async (req, res) => {
   try {
-    const results = await db.query("SELECT * FROM code WHERE id = $1", [req.params.id])
+    const results = await db.query("SELECT * FROM code WHERE id = $1", [
+      req.params.id,
+    ]);
 
     res.status(200).json({
-      status: "success", 
+      status: "success",
       data: {
         code: results.rows[0],
-      }
-    })
+      },
+    });
   } catch (error) {
-      console.log(error);
+    console.log(error);
   }
-})
+});
 
 // Create a new code document
 app.post("/api/v1/code", async (req, res) => {
@@ -77,18 +82,20 @@ app.post("/api/v1/code", async (req, res) => {
 
 app.put("/api/v1/code/:id", async (req, res) => {
   try {
-    const results = await db.query("UPDATE code SET code = $1 where id = $2 returning *", [req.body.code, req.params.id])
+    const results = await db.query(
+      "UPDATE code SET code = $1 where id = $2 returning *",
+      [req.body.code, req.params.id]
+    );
     res.status(200).json({
       status: "success",
       data: {
         code: results.rows[0],
-      }
-    })
+      },
+    });
   } catch (error) {
     console.log(error);
   }
-})
-
+});
 
 server.listen(3001, () => {
   console.log("listening on *:3001");
