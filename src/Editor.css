@@ -1,23 +1,74 @@
+.editor {
+  font-size: 14px;
+}
+
 .container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex: 1;
-    height: 1080px;
-    font-size: 14px;
+  display: flex;
+  flex-direction: column;
+
+  justify-content: center;
+  align-items: center;
+  min-height: 85vh;
+}
+.editor-container {
+  border: solid 1.5px #414141;
+  border-radius: 4px;
 }
 
-.header {
-    background-color: #161b22;
-    color: #c9d1d9;
-    padding: 10px;
-}
+.editor-header {
+  text-align: center;
+  color: #ffffff;
 
-.share {
-    background-color: #161b22;
-    color: #c9d1d9;
-    text-align: center;
+  display: flex;
+
+  margin: 0 auto;
+  width: 800px;
   
 }
 
-/* 0d1117 */
+.save {
+  font-size: 16px;
+  font-weight: bold;
+  display: flex;
+  flex: 1;
+  padding: 10px;
+  align-items: center;
+  opacity: 80%;
+  
+}
+
+.users {
+  font-size: 16px;
+  font-weight: bold;
+  display: flex;
+  flex: 1;
+  padding: 10px;
+
+  justify-content: flex-end;
+
+  align-items: center;
+  opacity: 80%;
+}
+.loader {
+    border: 5px solid #1c1c1c;
+    border-radius: 50%;
+    border-top: 5px solid #3a3a3a;
+    width: 15px;
+    height: 15px;
+    -webkit-animation: spin 1.5s linear infinite; /* Safari */
+    animation: spin 1.5s linear infinite;
+    margin: 7px 12px;
+    opacity: 80%;
+
+  }
+  
+  /* Safari */
+  @-webkit-keyframes spin {
+    0% { -webkit-transform: rotate(0deg); }
+    100% { -webkit-transform: rotate(360deg); }
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }

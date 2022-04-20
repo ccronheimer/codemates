@@ -1,0 +1,111 @@
+.header {
+    text-align: center;
+    color: #ffffff;
+  
+    display: flex;
+    padding: 10px;
+  
+    max-width: 1280px;
+    margin: 0 auto;
+    height: 50px;
+  }
+  
+  .divider {
+    display: flex;
+    border-bottom: solid 1.5px #414141;
+    
+  }
+  
+.title {
+    font-size: 24px;
+    font-weight: bold;
+    display: flex;
+    flex: 1;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .share-container {
+    display: flex;
+    flex: 4;
+    justify-content: center;
+    align-items: center;
+    font-size: 16px;
+    color: #fff;
+    
+  }
+  
+  .github {
+      display: flex;
+      flex: 1;
+    font-size: 16px;
+    color: #fff;
+    opacity: 80%;
+    text-decoration: none;
+    transition:  0.15s ease-in-out;
+    font-weight: bold;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .github:hover {
+      opacity: 100%;
+  }
+  
+  .share-text {
+    font-size: 16px;
+    color: #fff;
+  }
+  .share {
+    position: relative;
+    display: inline-block;
+  
+    border: solid 1.5px #414141;
+    background-color: #1e1e1e;
+    cursor: pointer;
+    transition: all 0.15s ease-in-out;
+  
+    padding: 10px;
+    margin-left: 10px;
+    border-radius: 4px;
+    font-weight: bold;
+    opacity: 80%;
+  }
+  
+  .share:hover {
+    background-color: #06f;
+  
+    opacity: 100%;
+  }
+  
+  .share .tooltiptext {
+    visibility: hidden;
+    width: 100px;
+    border: solid 1.5px #414141;
+    background-color: #1e1e1e;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    position: absolute;
+    z-index: 1;
+    font-weight: normal;
+    bottom: 4px;
+    left: 105%;
+    font-size: 14px;
+  }
+  
+  .share .tooltiptext::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    right: 100%;
+    margin-top: -7px;
+    border-width: 7px;
+    border-style: solid;
+    border-color: transparent #1e1e1e transparent transparent;
+  }
+  .share:hover .tooltiptext {
+    visibility: visible;
+  }
+  

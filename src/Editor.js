@@ -8,19 +8,25 @@ import { io } from "socket.io-client";
 import { useParams } from "react-router-dom";
 import CodeFinder from "./apis/CodeFinder";
 import "./Editor.css";
+import { FaGithub } from "react-icons/fa";
+import Header from "./Header";
 
 const Editor = () => {
   const { id: documentId } = useParams();
   const [code, setCode] = useState();
   const [socket, setSocket] = useState();
   const [savedCode, setSavedCode] = useState();
+  const [isSaved, setIsSaved] = useState(true);
 
+  const [users, setUsers] = useState();
   /*
     Connect to socket server
   */
   useEffect(() => {
     const s = io("http://localhost:3001/");
     setSocket(s);
+    s.on("count", connectedhandler);
+
     return () => {
       s.disconnect();
     };
@@ -37,6 +43,7 @@ const Editor = () => {
         const response = await CodeFinder.get(`/${documentId}`);
         setCode(response.data.data.code.code);
         setSavedCode(response.data.data.code.code);
+
         // join document
         socket.emit("get-document", documentId);
       } catch (error) {
@@ -57,6 +64,7 @@ const Editor = () => {
           code: code,
         });
         setSavedCode(response.data.data.code.code);
+        setIsSaved(true);
       } catch (error) {
         console.log(error);
       }
@@ -65,19 +73,26 @@ const Editor = () => {
       if (code !== savedCode) {
         handleSave();
       }
-    }, 3000);
+    }, 1000);
+
     return () => clearInterval(interval);
   }, [code, savedCode, documentId]);
 
   /*
     Receive changes handler for our socket
   */
+
+  const connectedhandler = (users) => {
+    setUsers(users);
+  };
+
   useEffect(() => {
     if (socket == null) return;
 
     const handler = (code) => {
       setCode(code);
     };
+
     socket.on("receive-changes", handler);
 
     return () => {
@@ -87,28 +102,40 @@ const Editor = () => {
 
   return (
     <div>
-      <div className="header">
-      <h1>Codemates</h1>
-       </div>
+      <Header documentId={documentId} />
 
-       <p className="share">Share this code 👉 {documentId}</p>
-      
       <div className="container">
-        <div className="editor">
-          
-          <CodeMirror
-            value={code}
-            height="400px"
-            width="800px"
-            theme={oneDark}
-            extensions={[java(), javascript({ jsx: true })]}
-            onChange={(value, viewUpdate) => {
-              if (socket !== null) {
-                socket.emit("send-changes", value);
-                setCode(value);
-              }
-            }}
-          />
+        <div className="editor-container">
+          <div className="editor-header">
+            {isSaved ? (
+              <div className="save">Saved</div>
+            ) : (
+              <div className="loader"></div>
+            )}
+
+            <div className="users">{users} connected</div>
+          </div>
+
+          <div className="editor">
+            <CodeMirror
+              value={code}
+              height="700px"
+              width="800px"
+              theme={oneDark}
+              extensions={[java(), javascript({ jsx: true })]}
+              onChange={(value, viewUpdate) => {
+                if (socket !== null) {
+                  socket.emit("send-changes", value);
+                  setCode(value);
+
+                  /* prevents from loading on start */
+                  if (savedCode) {
+                    setIsSaved(false);
+                  }
+                }
+              }}
+            />
+          </div>
         </div>
       </div>
     </div>

@@ -10,6 +10,8 @@ import Editor from './Editor';
 
 function App() {
   return (
+
+    
     <Router>
       <Routes>
       {/* load main screen redirects to random document */}
