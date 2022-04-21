@@ -7,10 +7,13 @@ const app = express();
 const http = require("http");
 const server = http.createServer(app);
 const morgan = require("morgan");
+const cli = require("nodemon/lib/cli");
 
 app.use(morgan("dev"));
 app.use(cors());
 app.use(express.json());
+
+let numUsers = 0;
 
 const io = require("socket.io")(server, {
   cors: {
@@ -20,23 +23,22 @@ const io = require("socket.io")(server, {
 });
 
 io.on("connection", (socket) => {
-  console.log(socket.client.conn.server.clientsCount + " users connected");
-
   socket.on("get-document", (documentId) => {
     // join room
     socket.join(documentId);
-
-    socket.broadcast
-      .to(documentId)
-      .emit("count", socket.client.conn.server.clientsCount);
+    numUsers++;
+    io.to(documentId).emit("clients", numUsers);
+  
     // send changes to the other sockets connected
     socket.on("send-changes", (code) => {
       socket.broadcast.to(documentId).emit("receive-changes", code);
     });
-  });
 
-  socket.on("disconnect", () => {
-    console.log("user disconnected");
+    socket.on("disconnect", () => {
+      console.log("user disconnected");
+      numUsers--;
+      io.to(documentId).emit("clients", numUsers);
+    });
   });
 });
 
