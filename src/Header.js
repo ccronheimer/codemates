@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { FaGithub } from "react-icons/fa";
 import "./Header.css";
 
 const Header = (props) => {
@@ -17,8 +18,10 @@ const Header = (props) => {
     <div>
       <div className="header">
         {/* Title */}
-        <div className="title">Codemates</div>
-
+        <div className="title">
+          <span style={{color: "#25EC50"}}>{"{"} </span> &nbsp;Codemates&nbsp; <span style={{color: "#25EC50"}}>{"}"}</span>
+        </div>
+        
         {/* Title */}
         <div className="share-container">
           <div className="share-text">
@@ -35,14 +38,15 @@ const Header = (props) => {
           </div>
         </div>
 
-        <a className="github" href="/">
-          GitHub
+        <div className="github-container">
+        <a className="github"href="https://www.linkedin.com/in/cameron-cronheimer-ab3a47165/" target="_blank" rel="noopener noreferrer">
+            <FaGithub size={30}/>
         </a>
+        </div>
 
       </div>
 
       <div className="divider"> </div>
-
     </div>
   );
 };

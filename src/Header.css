@@ -8,12 +8,13 @@
     max-width: 1280px;
     margin: 0 auto;
     height: 50px;
+    
   }
   
   .divider {
     display: flex;
     border-bottom: solid 1.5px #414141;
-    
+
   }
   
 .title {
@@ -23,6 +24,8 @@
     flex: 1;
     justify-content: center;
     align-items: center;
+    font-family: Mono;
+    
   }
   
   .share-container {
@@ -33,23 +36,30 @@
     font-size: 16px;
     color: #fff;
     
+
   }
   
-  .github {
-      display: flex;
-      flex: 1;
-    font-size: 16px;
-    color: #fff;
-    opacity: 80%;
-    text-decoration: none;
-    transition:  0.15s ease-in-out;
-    font-weight: bold;
+  .github-container {
+    display: flex;
+    flex: 1;
     justify-content: center;
     align-items: center;
+   
+
+  }
+  .github {
+    
+
+    color: #fff;
+    text-decoration: none;
+    transition:  0.1s ease-in-out;
+    font-weight: bold;
+    
+    
   }
   
   .github:hover {
-      opacity: 100%;
+      transform: scale(1.2);
   }
   
   .share-text {

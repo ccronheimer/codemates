@@ -2,14 +2,19 @@ import React, { useEffect } from "react";
 import { oneDark } from "@codemirror/theme-one-dark";
 import CodeMirror from "@uiw/react-codemirror";
 import { java } from "@codemirror/lang-java";
-import { javascript } from "@codemirror/lang-javascript";
+import { python } from "@codemirror/lang-python";
+
+// import { javascript } from "@codemirror/lang-javascript";
+// import { cpp } from "@codemirror/lang-cpp";
+// import { json } from "@codemirror/lang-json"
+// import { html } from "@codemirror/lang-html";
 import { useState } from "react";
 import { io } from "socket.io-client";
 import { useParams } from "react-router-dom";
 import CodeFinder from "./apis/CodeFinder";
 import "./Editor.css";
-import { FaGithub } from "react-icons/fa";
 import Header from "./Header";
+import Footer from "./Footer";
 
 const Editor = () => {
   const { id: documentId } = useParams();
@@ -17,7 +22,7 @@ const Editor = () => {
   const [socket, setSocket] = useState();
   const [savedCode, setSavedCode] = useState();
   const [isSaved, setIsSaved] = useState(true);
-
+  const [language, setLanguage] = useState();
   const [users, setUsers] = useState();
   /*
     Connect to socket server
@@ -25,7 +30,13 @@ const Editor = () => {
   useEffect(() => {
     const s = io("http://localhost:3001/");
     setSocket(s);
-    s.on("count", connectedhandler);
+    //  console.log(Array.from(io.s.s.keys()))
+
+    s.on("clients", (num) => {
+      setUsers(num);
+    });
+
+    setLanguage(java);
 
     return () => {
       s.disconnect();
@@ -82,10 +93,6 @@ const Editor = () => {
     Receive changes handler for our socket
   */
 
-  const connectedhandler = (users) => {
-    setUsers(users);
-  };
-
   useEffect(() => {
     if (socket == null) return;
 
@@ -100,6 +107,17 @@ const Editor = () => {
     };
   }, [socket, code]);
 
+  const [mode, setMode] = useState('java');
+  
+  // for some reason setting state from select value would bug out
+  const setLanguageHandler = (e) => {
+    if(e === "python") {
+      setLanguage(python())
+    }
+    if(e === "java") {
+      setLanguage(java())
+    }
+  }
   return (
     <div>
       <Header documentId={documentId} />
@@ -113,16 +131,25 @@ const Editor = () => {
               <div className="loader"></div>
             )}
 
+            <button onClick={() => setLanguage(java())}>java</button>
+            <button onClick={() => setLanguage(python())}>python</button>
+
+            <select type="select" value={"python"} onChange={(e) => setLanguageHandler(e.target.value)}>
+            <option value="java">Java</option>
+            <option value="python">Python</option>
+
+          </select>
+    
             <div className="users">{users} connected</div>
           </div>
 
           <div className="editor">
             <CodeMirror
               value={code}
-              height="700px"
+              height="60vh"
               width="800px"
               theme={oneDark}
-              extensions={[java(), javascript({ jsx: true })]}
+              extensions={language}
               onChange={(value, viewUpdate) => {
                 if (socket !== null) {
                   socket.emit("send-changes", value);
@@ -138,6 +165,8 @@ const Editor = () => {
           </div>
         </div>
       </div>
+
+      <Footer />
     </div>
   );
 };
