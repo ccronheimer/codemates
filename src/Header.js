@@ -6,7 +6,7 @@ const Header = (props) => {
   const [copied, setCopied] = useState("Copy");
 
   const copyText = () => {
-    navigator.clipboard.writeText(props.documentId);
+    navigator.clipboard.writeText(`http://localhost:3000/code/${props.documentId}`);
     setCopied("Copied ✅");
   };
 
@@ -21,11 +21,11 @@ const Header = (props) => {
         <div className="title">
           <span style={{color: "#25EC50"}}>{"{"} </span> &nbsp;Codemates&nbsp; <span style={{color: "#25EC50"}}>{"}"}</span>
         </div>
-        
+
         {/* Title */}
         <div className="share-container">
           <div className="share-text">
-            Share this code to invite friends 👉{" "}
+            Invite friends 👉{" "}
           </div>
 
           <div
@@ -39,7 +39,7 @@ const Header = (props) => {
         </div>
 
         <div className="github-container">
-        <a className="github"href="https://www.linkedin.com/in/cameron-cronheimer-ab3a47165/" target="_blank" rel="noopener noreferrer">
+        <a className="github"href="https://github.com/ccronheimer/codemates-client" target="_blank" rel="noopener noreferrer">
             <FaGithub size={30}/>
         </a>
         </div>

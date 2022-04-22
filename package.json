@@ -3,8 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@codemirror/lang-cpp": "^0.19.1",
+    "@codemirror/lang-html": "^0.19.4",
     "@codemirror/lang-java": "^0.19.1",
+    "@codemirror/lang-javascript": "^0.19.7",
     "@codemirror/lang-python": "^0.19.4",
+    "@codemirror/lang-rust": "^0.19.1",
     "@testing-library/jest-dom": "^5.16.3",
     "@testing-library/react": "^12.1.4",
     "@testing-library/user-event": "^13.5.0",

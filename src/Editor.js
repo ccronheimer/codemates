@@ -3,6 +3,10 @@ import { oneDark } from "@codemirror/theme-one-dark";
 import CodeMirror from "@uiw/react-codemirror";
 import { java } from "@codemirror/lang-java";
 import { python } from "@codemirror/lang-python";
+import { javascript } from "@codemirror/lang-javascript";
+import { cpp } from "@codemirror/lang-cpp";
+import { html } from "@codemirror/lang-html";
+import { rust } from "@codemirror/lang-rust";
 
 // import { javascript } from "@codemirror/lang-javascript";
 // import { cpp } from "@codemirror/lang-cpp";
@@ -23,7 +27,10 @@ const Editor = () => {
   const [savedCode, setSavedCode] = useState();
   const [isSaved, setIsSaved] = useState(true);
   const [language, setLanguage] = useState();
+  const [selected, setSelected] = useState();
+
   const [users, setUsers] = useState();
+
   /*
     Connect to socket server
   */
@@ -36,8 +43,7 @@ const Editor = () => {
       setUsers(num);
     });
 
-    setLanguage(java);
-
+    setLanguage(java());
     return () => {
       s.disconnect();
     };
@@ -102,22 +108,74 @@ const Editor = () => {
 
     socket.on("receive-changes", handler);
 
+    const shandler = (syntax) => {
+      console.log(syntax);
+      if (syntax === "python") {
+        setLanguage(python());
+        setSelected("python");
+      }
+      if (syntax === "java") {
+        setLanguage(java());
+        setSelected("java");
+      }
+      if (syntax === "javascript") {
+        setLanguage(javascript());
+        setSelected("javascript");
+      }
+      if (syntax === "cpp") {
+        setLanguage(cpp());
+        setSelected("cpp");
+      }
+      if (syntax === "html") {
+        setLanguage(html());
+        setSelected("html");
+      }
+      if (syntax === "rust") {
+        setLanguage(rust());
+        setSelected("rust");
+      }
+    };
+
+    socket.on("receive-syntax", shandler);
+
     return () => {
       socket.off("receive-changes", handler);
     };
   }, [socket, code]);
 
-  const [mode, setMode] = useState('java');
-  
   // for some reason setting state from select value would bug out
   const setLanguageHandler = (e) => {
-    if(e === "python") {
-      setLanguage(python())
+    if (e === "python") {
+      setLanguage(python());
+      setSelected("python");
+      socket.emit("send-syntax", "python");
     }
-    if(e === "java") {
-      setLanguage(java())
+    if (e === "java") {
+      setLanguage(java());
+      setSelected("java");
+      socket.emit("send-syntax", "java");
     }
-  }
+    if (e === "javascript") {
+      setLanguage(javascript());
+      setSelected("javascript");
+      socket.emit("send-syntax", "javascript");
+    }
+    if (e === "cpp") {
+      setLanguage(cpp());
+      setSelected("cpp");
+      socket.emit("send-syntax", "cpp");
+    }
+    if (e === "html") {
+      setLanguage(html());
+      setSelected("html");
+      socket.emit("send-syntax", "html");
+    }
+    if (e === "rust") {
+      setLanguage(rust());
+      setSelected("rust");
+      socket.emit("send-syntax", "rust");
+    }
+  };
   return (
     <div>
       <Header documentId={documentId} />
@@ -125,21 +183,29 @@ const Editor = () => {
       <div className="container">
         <div className="editor-container">
           <div className="editor-header">
-            {isSaved ? (
-              <div className="save">Saved</div>
-            ) : (
-              <div className="loader"></div>
-            )}
+            <div className="save-container">
+              {isSaved ? (
+                <div className="save">Saved</div>
+              ) : (
+                <div className="loader"></div>
+              )}
+            </div>
 
-            <button onClick={() => setLanguage(java())}>java</button>
-            <button onClick={() => setLanguage(python())}>python</button>
+            {/* Select field */}
+            <select
+              value={selected}
+              className="selector"
+              type="select"
+              onChange={(e) => setLanguageHandler(e.target.value)}
+            >
+              <option value="java">Java</option>
+              <option value="python">Python</option>
+              <option value="javascript">Javascript</option>
+              <option value="cpp">C++</option>
+              <option value="html">Html</option>
+              <option value="rust">Rust</option>
+            </select>
 
-            <select type="select" value={"python"} onChange={(e) => setLanguageHandler(e.target.value)}>
-            <option value="java">Java</option>
-            <option value="python">Python</option>
-
-          </select>
-    
             <div className="users">{users} connected</div>
           </div>
 
@@ -147,7 +213,7 @@ const Editor = () => {
             <CodeMirror
               value={code}
               height="60vh"
-              width="800px"
+              width="60vw"
               theme={oneDark}
               extensions={language}
               onChange={(value, viewUpdate) => {
