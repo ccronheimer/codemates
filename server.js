@@ -7,7 +7,6 @@ const app = express();
 const http = require("http");
 const server = http.createServer(app);
 const morgan = require("morgan");
-const cli = require("nodemon/lib/cli");
 
 app.use(morgan("dev"));
 app.use(cors());
@@ -28,10 +27,15 @@ io.on("connection", (socket) => {
     socket.join(documentId);
     numUsers++;
     io.to(documentId).emit("clients", numUsers);
-  
+
     // send changes to the other sockets connected
     socket.on("send-changes", (code) => {
       socket.broadcast.to(documentId).emit("receive-changes", code);
+    });
+
+    // change syntax of sockets
+    socket.on("send-syntax", (syntax) => {
+      socket.broadcast.to(documentId).emit("receive-syntax", syntax);
     });
 
     socket.on("disconnect", () => {
@@ -72,11 +76,12 @@ app.post("/api/v1/code", async (req, res) => {
       [req.body.id, req.body.code]
     );
     res.status(201).json({
-      status: "succes",
+      status: "success",
       data: {
         code: results.rows[0],
       },
     });
+   
   } catch (error) {
     console.log(error);
   }
