@@ -1,10 +1,11 @@
 version: "3"
 services:
   postgres:
-    image: "postgres:latest"
+    image: ccronheimer/postgres:latest
     environment:
       - POSTGRES_PASSWORD=camerondalton
   nginx:
+    image: ccronheimer/codemates_nginx
     depends_on:
       - api
       - client
@@ -15,9 +16,10 @@ services:
     ports:
       - "3050:80"
   api:
+    image: ccronheimer/codemates_api
     build:
       dockerfile: Dockerfile
-      context: "./server"
+      context: ./server
     volumes:
       - /app/node_modules
       - ./server:/app
@@ -29,6 +31,7 @@ services:
       - PGPORT=5432
   client:
     stdin_open: true
+    image: ccronheimer/codemates_client
     environment:
       - CHOKIDAR_USEPOLLING=true
       - WDS_SOCKET_PORT=0
