@@ -35,7 +35,7 @@ const Editor = () => {
     Connect to socket server
   */
   useEffect(() => {
-    const s = io("http://localhost:3001/");
+    const s = io({ path: "/socket.io" })
     setSocket(s);
     //  console.log(Array.from(io.s.s.keys()))
 
