@@ -17,11 +17,16 @@ let numUsers = 0;
 // Postgres client setup
 const { Pool } = require("pg");
 const pgClient = new Pool({
-  user: process.env.PGUSER,
-  host: process.env.PGHOST,
-  database: process.env.PGDATABASE,
-  password: process.env.PGPASSWORD,
-  port: process.env.PGPORT
+  // user: process.env.PGUSER,
+  // host: process.env.PGHOST,
+  // database: process.env.PGDATABASE,
+  // password: process.env.PGPASSWORD,
+  // port: process.env.PGPORT
+  user: process.env.RDS_USERNAME,
+  host: process.env.RDS_HOSTNAME,
+  database: process.env.RDS_DB_NAME,
+  password: process.env.RDS_PASSWORD,
+  port: process.env.RDS_PORT
 });
 
 //CREATE TABLE code (id VARCHAR(50) NOT NULL, code TEXT, PRIMARY KEY (id));

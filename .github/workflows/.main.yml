@@ -1,0 +1,91 @@
+# NAME
+name: CI
+
+# EVENT
+on:
+  # Triggers the workflow on push or pull request events but only for the main branch
+  push:
+    branches: [ main ]
+    
+# JOBS
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+  # The type of runner that the job will run on
+    name: build docker images
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: checkout
+        uses: actions/checkout@v2
+
+      # Builds and pushes images to DockerHub 
+      - name: Docker Login
+        uses: docker/login-action@v1.8.0
+        with: 
+          username: ${{secrets.DOCKERHUB_USERNAME}}
+          password: ${{secrets.DOCKERHUB_TOKEN}}
+          logout: true
+  
+      # BUILD
+      - name: Build NGINX image
+        run: docker build -t ccronheimer/codemates_nginx -f ./nginx/Dockerfile ./nginx 
+      
+      - name: Build client image
+        run: docker build -t ccronheimer/codemates_client -f ./client/Dockerfile ./client
+        
+      - name: Build backend image
+        run: docker build -t ccronheimer/codemates_api -f ./server/Dockerfile ./server
+        
+      # TAG
+      - name: Tag our NGINX image
+        run: docker tag ccronheimer/codemates_nginx ccronheimer/codemates_nginx:latest
+      
+      - name: Tag our client image
+        run: docker tag ccronheimer/codemates_client ccronheimer/codemates_client:latest
+        
+      - name: Tag our api image
+        run: docker tag ccronheimer/codemates_api ccronheimer/codemates_api:latest
+      
+      # PUSH
+      - name: Push to NGINX dockerhub
+        run: docker push ccronheimer/codemates_nginx
+        
+      - name: Push to client dockerhub
+        run: docker push ccronheimer/codemates_client
+        
+      - name: Push to api dockerhub
+        run: docker push ccronheimer/codemates_api
+          
+      - name: Get Timestamp
+        uses: gerred/actions/current-time@master
+        id: current-time
+      
+      - name: Run String Replace
+        uses: frabert/replace-string-action@master
+        id: format-time
+        with: 
+          pattern: '[:\.]+'
+          string: "${{ steps.current-time.outputs.time }}"
+          replace-with: '-'
+          flags: 'g'
+      
+      - name: Generate Deployment Package
+        run: zip -r deploy.zip * -x "**node_modules**"
+
+     # Deploy to EBS
+      - name: Beanstalk Deploy 
+        uses: einaregilsson/beanstalk-deploy@v20
+        with: 
+          # AWS Access Key
+          aws_access_key: ${{secrets.AWS_ACCESS_KEY}}
+          # AWS Secret Key
+          aws_secret_key: ${{secrets.AWS_ACCESS_SECRET_KEY}}         
+          application_name: Codemates
+          environment_name: Codemates-env
+          version_label: "docker-app-${{ steps.format-time.outputs.replaced }}"
+          region: us-east-1
+          deployment_package: deploy.zip
+          

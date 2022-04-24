@@ -1,0 +1,62 @@
+{
+  "AWSEBDockerrunVersion": 2,
+    "containerDefinitions": [
+      {
+        "name": "nginx",
+        "image": "ccronheimer/codemates_nginx",
+        "hostname": "nginx",
+        "essential": true,
+        "portMappings": [
+          {
+            "hostPort": 80,
+            "containerPort": 80
+          }
+        ],
+        "links": ["client", "api"],
+        "memory": 100
+      },
+      {
+        "name": "client",
+        "image": "ccronheimer/codemates_client",
+        "hostname": "client",
+        "environment": [
+            {
+              "name": "WDS_SOCKET_PORT",
+              "value": "0"
+            }
+        ],
+        "essential": false,
+        "memory": 300
+      },
+      {
+        "name": "api",
+        "image": "ccronheimer/codemates_api",
+        "hostname": "api",
+        "environment": [ 
+          {
+               "name": "RDS_HOSTNAME",
+               "value": "aa1kppeuyyybx3a.c7kvypav9ocr.us-east-1.rds.amazonaws.com"
+          },
+          {
+               "name": "RDS_USERNAME",
+               "value": "postgres"
+          },
+          {
+               "name": "RDS_PASSWORD",
+               "value": "camerondalton"
+            
+          },
+          {
+              "name": "RDS_PORT",
+              "value": "5432"
+          },
+          {
+              "name": "RDS_DB_NAME",
+              "value": "ebdb"
+          }
+        ],
+        "essential": false,
+        "memory": 300
+      }
+    ]
+  }
