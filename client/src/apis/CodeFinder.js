@@ -1,5 +1,5 @@
 import axios from "axios";
 
 export default axios.create({
-    baseURL: "http://localhost:80/api/v1/code"
+    baseURL: "http://codemates.us-east-1.elasticbeanstalk.com/api/v1/code"
 })
