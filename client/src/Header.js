@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { FaGithub } from "react-icons/fa";
 import "./Header.css";
 import { FaRegCopy } from "react-icons/fa";
 import { FaCheck } from "react-icons/fa";
@@ -17,9 +16,6 @@ const Header = (props) => {
 
   return (
     <>
-
-  
-    <div className="header-container">
       <div className="header">
         {/* Title */}
         <div className="title">
@@ -39,17 +35,17 @@ const Header = (props) => {
               onClick={() => copyText()}
               onMouseLeave={() => setCopied(false)}
             >
-              {copied ? <FaCheck className="checkmark" /> : <FaRegCopy className="share-icon" />}
+              {copied ? (
+                <FaCheck className="checkmark" />
+              ) : (
+                <FaRegCopy className="share-icon" />
+              )}
             </div>
           </div>
         </div>
-
-      
       </div>
 
-    
-    </div>
-    <div className="divider"> </div>
+      <div className="divider" />
     </>
   );
 };

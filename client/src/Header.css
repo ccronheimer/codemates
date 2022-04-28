@@ -1,21 +1,19 @@
 .header {
-  text-align: center;
-  color: #ffffff;
-
-  display: flex;
-  padding: 10px;
-
-  max-width: 1280px;
-  margin: 0 auto;
-  height: 50px;
+  color: #fff;
+ 
+  max-width: 1080px;
   
-}
-
-.header-container {
+  margin: 0 auto;
   display: flex;
-  background-color: #1e1e1e;
   flex-wrap: wrap;
   justify-content: space-between;
+
+}
+
+@media only screen and (max-width: 768px) {
+.header {
+  justify-content: center;
+}
 }
 .divider {
   display: flex;
@@ -28,15 +26,15 @@
   font-size: 24px;
   font-weight: bold;
   display: flex;
-  flex: 1;
+  
   justify-content: flex-start;
   align-items: center;
   font-family: Mono;
-  margin: 20px;
+  padding: 20px;
 }
 
 .share-sub-container {
-  background-color: #1e1e1e;
+  background-color: #121212;
   border: solid 1.5px #414141;
   padding: 10px;
   margin-left: 10px;
@@ -78,31 +76,14 @@
 .share-container {
   display: flex;
   
-  flex: 4;
+  padding: 20px;
+
   justify-content: center;
   align-items: center;
   font-size: 14px;
   color: #fff;
 }
 
-.github-container {
-  display: flex;
-  flex: 1;
-  justify-content: flex-end;
-  align-items: center;
-    margin: 20px;
-
-}
-.github {
-  color: #fff;
-  text-decoration: none;
-  transition: 0.1s ease-in-out;
-  font-weight: bold;
-}
-
-.github:hover {
-  transform: scale(1.2);
-}
 
 .share-text {
   color: #fff;

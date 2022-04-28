@@ -2,7 +2,6 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 
-
 const app = express();
 const http = require("http");
 const server = http.createServer(app);
@@ -26,17 +25,18 @@ const pgClient = new Pool({
   host: process.env.RDS_HOSTNAME,
   database: process.env.RDS_DB_NAME,
   password: process.env.RDS_PASSWORD,
-  port: process.env.RDS_PORT
+  port: process.env.RDS_PORT,
 });
 
 //CREATE TABLE code (id VARCHAR(50) NOT NULL, code TEXT, PRIMARY KEY (id));
 
-pgClient.on("connect", client => {
+pgClient.on("connect", (client) => {
   client
-    .query("CREATE TABLE IF NOT EXISTS code (id VARCHAR(50) NOT NULL, code TEXT, PRIMARY KEY (id))")
-    .catch(err => console.log("PG ERROR", err));
+    .query(
+      "CREATE TABLE IF NOT EXISTS code (id VARCHAR(50) NOT NULL, code TEXT, PRIMARY KEY (id))"
+    )
+    .catch((err) => console.log("PG ERROR", err));
 });
-
 
 const io = require("socket.io")(server, {
   cors: {
@@ -45,24 +45,28 @@ const io = require("socket.io")(server, {
   },
 });
 
-
 io.on("connection", (socket) => {
-  socket.on("get-document", (documentId) => {
+
+  socket.on("get-document", async (documentId) => {
     // join room
     socket.join(documentId);
     numUsers++;
-    io.to(documentId).emit("clients", numUsers);
 
+    // number of users in room 
+    io.in(documentId).emit("clients", io.sockets.adapter.rooms.get(documentId).size);
+   
     // send changes to the other sockets connected
-    socket.on("send-changes", (code) => {
-      socket.broadcast.to(documentId).emit("receive-changes", code);
+    socket.on("CODE_CHANGED", (code) => {
+      //socket.broadcast.to(documentId).emit("receive-changes", code);
+      socket.to(documentId).emit("receive-changes", code);
     });
 
     // change syntax of sockets
-    socket.on("send-syntax", (syntax) => {
-      socket.broadcast.to(documentId).emit("receive-syntax", syntax);
+    socket.on("change-syntax", (syntax) => {
+      socket.broadcast.to(documentId).emit("syntax-change", syntax);
     });
 
+    // when user leaves our room
     socket.on("disconnect", () => {
       console.log("user disconnected");
       numUsers--;
@@ -71,32 +75,10 @@ io.on("connection", (socket) => {
   });
 });
 
-setInterval(() => {
-  io.emit("time", new Date());
-}, 1000);
-
-//Express route definitions
+// Express route definitions
 app.get("/", (req, res) => {
   res.send("Hi");
 });
-
-
-// app.get("/values/all", async(req, res) => {
-//   const values = await pgClient.query("SELECT * FROM values");
-//   console.log(values);
-//   res.send(values);
-
-// })
-
-// app.put("/values", async(req, res) => {
-//   if(!req.body.value) res.send({ working: false});
-//   pgClient.query("INSERT INTO values(number) VALUES($1)", [req.body.value])
-//   console.log(req.body.value);
-
-//   res.send({working: true});
-
-// })
-
 
 // get a code document
 app.get("/v1/code/:id", async (req, res) => {
@@ -129,7 +111,6 @@ app.post("/v1/code", async (req, res) => {
         code: results.rows[0],
       },
     });
-   
   } catch (error) {
     console.log(error);
   }

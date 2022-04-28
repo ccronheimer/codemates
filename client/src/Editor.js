@@ -1,11 +1,4 @@
 import React, { useEffect } from "react";
-import { oneDark } from "@codemirror/theme-one-dark";
-import { java } from "@codemirror/lang-java";
-import { python } from "@codemirror/lang-python";
-import { javascript } from "@codemirror/lang-javascript";
-import { cpp } from "@codemirror/lang-cpp";
-import { html } from "@codemirror/lang-html";
-import { rust } from "@codemirror/lang-rust";
 
 import "codemirror/lib/codemirror.css";
 import "codemirror/theme/monokai.css";
@@ -33,7 +26,6 @@ const Editor = () => {
   const [socket, setSocket] = useState();
   const [savedCode, setSavedCode] = useState();
   const [isSaved, setIsSaved] = useState(true);
-  const [language, setLanguage] = useState();
   const [selected, setSelected] = useState();
   const [editor, setEditor] = useState();
 
@@ -42,14 +34,15 @@ const Editor = () => {
     Connect to socket server
   */
   useEffect(() => {
-    // const s = io({ path: "/socket.io" }, {
-    //   transports: ['websocket'],
-    // });
-
-    // change this back to /socket.io
-    const s = io("http://localhost:3001/", {
-      transports: ["websocket"],
+    
+    const s = io({ path: "/socket.io" }, {
+      transports: ['websocket'],
     });
+
+   
+    // const s = io("http://localhost:3001/", {
+    //   transports: ["websocket"],
+    // });
 
     setSocket(s);
 
@@ -97,8 +90,6 @@ const Editor = () => {
       // a save is underway
       setIsSaved(false);
     });
-
-    setLanguage(java());
 
     return () => {
       s.disconnect();
