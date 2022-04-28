@@ -33,29 +33,6 @@
         "name": "api",
         "image": "ccronheimer/codemates_api",
         "hostname": "api",
-        "environment": [ 
-          {
-               "name": "RDS_HOSTNAME",
-               "value": "aa1kppeuyyybx3a.c7kvypav9ocr.us-east-1.rds.amazonaws.com"
-          },
-          {
-               "name": "RDS_USERNAME",
-               "value": "postgres"
-          },
-          {
-               "name": "RDS_PASSWORD",
-               "value": "camerondalton"
-            
-          },
-          {
-              "name": "RDS_PORT",
-              "value": "5432"
-          },
-          {
-              "name": "RDS_DB_NAME",
-              "value": "ebdb"
-          }
-        ],
         "essential": false,
         "memory": 300
       }
