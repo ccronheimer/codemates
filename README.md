@@ -1,6 +1,6 @@
 ## Codemates 
 
-🌎 👉 https://codemates.ca/code/6ca501d2-e250-4b18-8fa4-bd15add724d8
+🌎 👉 https://codemates.ca
 
 A free collabrative live code editor.
 
