@@ -1,53 +1,56 @@
 import React, { useState } from "react";
 import { FaGithub } from "react-icons/fa";
 import "./Header.css";
+import { FaRegCopy } from "react-icons/fa";
+import { FaCheck } from "react-icons/fa";
 
 const Header = (props) => {
-  const [copied, setCopied] = useState("Copy");
+  const [copied, setCopied] = useState(false);
 
   const copyText = () => {
-    navigator.clipboard.writeText(`http://localhost:3000/code/${props.documentId}`);
-    setCopied("Copied ✅");
-  };
-
-  const resetCopy = () => {
-    setCopied("Copy");
+    navigator.clipboard.writeText(
+      `http://localhost:3000/code/${props.documentId}`
+    );
+    console.log("copy");
+    setCopied(true);
   };
 
   return (
-    <div>
+    <>
+
+  
+    <div className="header-container">
       <div className="header">
         {/* Title */}
         <div className="title">
-          <span style={{color: "#25EC50"}}>{"{"} </span> &nbsp;Codemates&nbsp; <span style={{color: "#25EC50"}}>{"}"}</span>
+          <span style={{ color: "#25EC50" }}>{"{"} </span> &nbsp;Codemates&nbsp;{" "}
+          <span style={{ color: "#25EC50" }}>{"}"}</span>
         </div>
 
         {/* Title */}
         <div className="share-container">
-          <div className="share-text">
-            Invite friends 👉{" "}
-          </div>
+          <div className="share-text">Invite friends 👉 </div>
 
-          <div
-            className="share"
-            onClick={() => copyText()}
-            onMouseLeave={() => resetCopy()}
-          >
-            {props.documentId}
-            <span className="tooltiptext">{copied}</span>
+          <div className="share-sub-container">
+            <div className="share">{props.documentId}</div>
+
+            <div
+              className="share-icon-container"
+              onClick={() => copyText()}
+              onMouseLeave={() => setCopied(false)}
+            >
+              {copied ? <FaCheck className="checkmark" /> : <FaRegCopy className="share-icon" />}
+            </div>
           </div>
         </div>
 
-        <div className="github-container">
-        <a className="github"href="https://github.com/ccronheimer/codemates-client" target="_blank" rel="noopener noreferrer">
-            <FaGithub size={30}/>
-        </a>
-        </div>
-
+      
       </div>
 
-      <div className="divider"> </div>
+    
     </div>
+    <div className="divider"> </div>
+    </>
   );
 };
 

@@ -8,9 +8,15 @@
   max-width: 1280px;
   margin: 0 auto;
   height: 50px;
-  background-color: #06f;
+  
 }
 
+.header-container {
+  display: flex;
+  background-color: #1e1e1e;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
 .divider {
   display: flex;
 
@@ -29,8 +35,49 @@
   margin: 20px;
 }
 
+.share-sub-container {
+  background-color: #1e1e1e;
+  border: solid 1.5px #414141;
+  padding: 10px;
+  margin-left: 10px;
+  border-radius: 4px;
+  display: flex;
+  justify-content: center;
+
+}
+.share {
+  font-weight: bold;
+  margin-right: 10px;
+  opacity: 80%;
+  
+}
+.share-icon-container {
+  padding-left: 10px;
+  cursor: pointer;
+ 
+  border-left: solid 1.5px #414141;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  
+}
+
+.checkmark {
+  color: #25EC50;
+  font-size: 16px;
+}
+.share-icon {
+  transition: all 0.1s ease-in-out;
+  font-size: 16px;
+}
+.share-icon:hover {
+  transform: scale(1.2);
+  
+}
+
 .share-container {
   display: flex;
+  
   flex: 4;
   justify-content: center;
   align-items: center;
@@ -62,55 +109,5 @@
 
   font-weight: bold;
 }
-.share {
-  position: relative;
-  display: inline-block;
 
-  border: solid 1.5px #414141;
-  background-color: #1e1e1e;
-  cursor: pointer;
-  transition: all 0.15s ease-in-out;
 
-  padding: 10px;
-  margin-left: 10px;
-  border-radius: 4px;
-  font-weight: bold;
-  
-}
-
-.share:hover {
-  background-color: #06f;
-
-  opacity: 100%;
-}
-
-.share .tooltiptext {
-  visibility: hidden;
-  width: 100px;
-  border: solid 1.5px #414141;
-  background-color: #1e1e1e;
-  color: #fff;
-  text-align: center;
-  border-radius: 6px;
-  padding: 5px 0;
-  position: absolute;
-  z-index: 1;
-  font-weight: normal;
-  bottom: 4px;
-  left: 105%;
-  font-size: 14px;
-}
-
-.share .tooltiptext::after {
-  content: "";
-  position: absolute;
-  top: 50%;
-  right: 100%;
-  margin-top: -7px;
-  border-width: 7px;
-  border-style: solid;
-  border-color: transparent #1e1e1e transparent transparent;
-}
-.share:hover .tooltiptext {
-  visibility: visible;
-}

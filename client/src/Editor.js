@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import { oneDark } from "@codemirror/theme-one-dark";
-import CodeMirror from "@uiw/react-codemirror";
 import { java } from "@codemirror/lang-java";
 import { python } from "@codemirror/lang-python";
 import { javascript } from "@codemirror/lang-javascript";
@@ -8,10 +7,18 @@ import { cpp } from "@codemirror/lang-cpp";
 import { html } from "@codemirror/lang-html";
 import { rust } from "@codemirror/lang-rust";
 
-// import { javascript } from "@codemirror/lang-javascript";
-// import { cpp } from "@codemirror/lang-cpp";
-// import { json } from "@codemirror/lang-json"
-// import { html } from "@codemirror/lang-html";
+import "codemirror/lib/codemirror.css";
+import "codemirror/theme/monokai.css";
+
+// python, java, c#, c++, javascript, swift
+import "codemirror/mode/clike/clike";
+import "codemirror/mode/javascript/javascript";
+import "codemirror/mode/python/python";
+import "codemirror/mode/swift/swift";
+
+import "codemirror/keymap/sublime";
+import CodeMirror from "codemirror";
+
 import { useState } from "react";
 import { io } from "socket.io-client";
 import { useParams } from "react-router-dom";
@@ -28,22 +35,71 @@ const Editor = () => {
   const [isSaved, setIsSaved] = useState(true);
   const [language, setLanguage] = useState();
   const [selected, setSelected] = useState();
+  const [editor, setEditor] = useState();
 
   const [users, setUsers] = useState();
-
   /*
     Connect to socket server
   */
   useEffect(() => {
-    const s = io({ path: "/socket.io" })
-    setSocket(s);
-    //  console.log(Array.from(io.s.s.keys()))
+    // const s = io({ path: "/socket.io" }, {
+    //   transports: ['websocket'],
+    // });
 
+    // change this back to /socket.io
+    const s = io("http://localhost:3001/", {
+      transports: ["websocket"],
+    });
+
+    setSocket(s);
+
+    /* EDITOR INIT */
+    const cm = CodeMirror.fromTextArea(document.getElementById("codemirror"), {
+      value: "hello",
+      lineNumbers: true,
+      keyMap: "sublime",
+      theme: "monokai",
+      mode: "python",
+    });
+
+    setEditor(cm);
+
+    // code mirror changes
+    cm.on("change", (instance, changes) => {
+      const { origin } = changes;
+
+      // if the change is use then emit
+      if (origin !== "setValue") {
+        s.emit("CODE_CHANGED", instance.getValue());
+        setCode(instance.getValue()); // for saving
+
+        // a save is underway
+        setIsSaved(false);
+      }
+    });
+
+    // number of users in our room
     s.on("clients", (num) => {
       setUsers(num);
     });
 
+    s.on("syntax-change", (syntax) => {
+      cm.setOption("mode", syntax);
+      setSelected(syntax);
+      // cm.setValue(syntax);
+    });
+
+    // changes code on socket change
+    s.on("receive-changes", (code) => {
+      cm.setValue(code);
+      setCode(code);
+
+      // a save is underway
+      setIsSaved(false);
+    });
+
     setLanguage(java());
+
     return () => {
       s.disconnect();
     };
@@ -61,6 +117,8 @@ const Editor = () => {
         setCode(response.data.data.code.code);
         setSavedCode(response.data.data.code.code);
 
+        // set editor init value to the saved code
+        editor.getDoc().setValue(response.data.data.code.code);
         // join document
         socket.emit("get-document", documentId);
       } catch (error) {
@@ -69,7 +127,7 @@ const Editor = () => {
     };
 
     fetchData();
-  }, [socket, documentId]);
+  }, [socket, documentId, editor]);
 
   /* 
     SAVE: if there is a change in code then we set a timer to update changes
@@ -99,83 +157,6 @@ const Editor = () => {
     Receive changes handler for our socket
   */
 
-  useEffect(() => {
-    if (socket == null) return;
-
-    const handler = (code) => {
-      setCode(code);
-    };
-
-    socket.on("receive-changes", handler);
-
-    const shandler = (syntax) => {
-      console.log(syntax);
-      if (syntax === "python") {
-        setLanguage(python());
-        setSelected("python");
-      }
-      if (syntax === "java") {
-        setLanguage(java());
-        setSelected("java");
-      }
-      if (syntax === "javascript") {
-        setLanguage(javascript());
-        setSelected("javascript");
-      }
-      if (syntax === "cpp") {
-        setLanguage(cpp());
-        setSelected("cpp");
-      }
-      if (syntax === "html") {
-        setLanguage(html());
-        setSelected("html");
-      }
-      if (syntax === "rust") {
-        setLanguage(rust());
-        setSelected("rust");
-      }
-    };
-
-    socket.on("receive-syntax", shandler);
-
-    return () => {
-      socket.off("receive-changes", handler);
-    };
-  }, [socket, code]);
-
-  // for some reason setting state from select value would bug out
-  const setLanguageHandler = (e) => {
-    if (e === "python") {
-      setLanguage(python());
-      setSelected("python");
-      socket.emit("send-syntax", "python");
-    }
-    if (e === "java") {
-      setLanguage(java());
-      setSelected("java");
-      socket.emit("send-syntax", "java");
-    }
-    if (e === "javascript") {
-      setLanguage(javascript());
-      setSelected("javascript");
-      socket.emit("send-syntax", "javascript");
-    }
-    if (e === "cpp") {
-      setLanguage(cpp());
-      setSelected("cpp");
-      socket.emit("send-syntax", "cpp");
-    }
-    if (e === "html") {
-      setLanguage(html());
-      setSelected("html");
-      socket.emit("send-syntax", "html");
-    }
-    if (e === "rust") {
-      setLanguage(rust());
-      setSelected("rust");
-      socket.emit("send-syntax", "rust");
-    }
-  };
   return (
     <div>
       <Header documentId={documentId} />
@@ -196,39 +177,24 @@ const Editor = () => {
               value={selected}
               className="selector"
               type="select"
-              onChange={(e) => setLanguageHandler(e.target.value)}
+              onChange={(e) => {
+                socket.emit("change-syntax", e.target.value);
+                editor.setOption("mode", e.target.value);
+                setSelected(e.target.value);
+              }}
             >
-              <option value="java">Java</option>
               <option value="python">Python</option>
+              <option value="text/x-java">Java</option>
               <option value="javascript">Javascript</option>
-              <option value="cpp">C++</option>
-              <option value="html">Html</option>
-              <option value="rust">Rust</option>
+              <option value="text/x-csharp">C#</option>
+              <option value="text/x-c++src">C++</option>
+              <option value="swift">Swift</option>
             </select>
 
             <div className="users">{users} connected</div>
           </div>
 
-          <div className="editor">
-            <CodeMirror
-              value={code}
-              height="60vh"
-              width="60vw"
-              theme={oneDark}
-              extensions={language}
-              onChange={(value, viewUpdate) => {
-                if (socket !== null) {
-                  socket.emit("send-changes", value);
-                  setCode(value);
-
-                  /* prevents from loading on start */
-                  if (savedCode) {
-                    setIsSaved(false);
-                  }
-                }
-              }}
-            />
-          </div>
+          <textarea className="editor" id="codemirror" />
         </div>
       </div>
 

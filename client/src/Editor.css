@@ -1,7 +1,14 @@
 .editor {
   font-size: 14px;
+ 
 }
 
+.CodeMirror {
+  font-size: 14px;
+
+  height: 40vh;
+  
+}
 .container {
   display: flex;
   flex-direction: row;
@@ -18,11 +25,15 @@
 .editor-container {
   border: solid 1.5px #414141;
   border-radius: 4px;
-  /* width: 60vw;
+  width: 60vw;
+  
   max-width: 1080px;
-  min-width: 400px; */
+  min-width: 400px;
 }
 
+.textarea {
+  display: none;
+}
 
 .selector {
     background-color: #121212;
