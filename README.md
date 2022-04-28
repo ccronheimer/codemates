@@ -6,5 +6,5 @@ A free collabrative live code editor.
 
 
 ### Architecture
-<img src="sd" alt="sd" width="600"/>
+<img src="sd.png" alt="sd" />
 
