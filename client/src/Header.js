@@ -8,7 +8,7 @@ const Header = (props) => {
 
   const copyText = () => {
     navigator.clipboard.writeText(
-      `http://localhost:3000/code/${props.documentId}`
+      `https://codemates.ca/code/${props.documentId}`
     );
     console.log("copy");
     setCopied(true);
