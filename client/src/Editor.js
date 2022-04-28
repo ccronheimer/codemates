@@ -34,12 +34,8 @@ const Editor = () => {
     Connect to socket server
   */
   useEffect(() => {
-    
-    const s = io({ path: "/socket.io" }, {
-      transports: ['websocket'],
-    });
 
-   
+    const s = io({ path: "/socket.io" })   
     // const s = io("http://localhost:3001/", {
     //   transports: ["websocket"],
     // });
