@@ -11,8 +11,17 @@ const Header = (props) => {
       `https://codemates.ca/code/${props.documentId}`
     );
     console.log("copy");
-    setCopied(true);
+  setCopied(true);
   };
+
+
+  const unCopy = () => {
+    setTimeout(() => {
+      setCopied(false);
+  }, 2000);
+
+  return () => clearInterval(2000);
+  }
 
   return (
     <>
@@ -33,7 +42,7 @@ const Header = (props) => {
             <div
               className="share-icon-container"
               onClick={() => copyText()}
-              onMouseLeave={() => setCopied(false)}
+              onMouseLeave={() => unCopy()}
             >
               {copied ? (
                 <FaCheck className="checkmark" />

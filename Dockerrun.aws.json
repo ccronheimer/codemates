@@ -19,13 +19,6 @@
         "name": "client",
         "image": "ccronheimer/codemates_client",
         "hostname": "client",
-        "environment": [
-            {
-              "name": "REACT_APP_API",
-              "value": "http://codemates.us-east-1.elasticbeanstalk.com/api/v1/code"
-            }
-
-        ],
         "essential": false,
         "memory": 300
       },
