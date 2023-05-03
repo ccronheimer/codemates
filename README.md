@@ -1,6 +1,6 @@
 ## Codemates 
 
-## 🌎 - https://codemates.ca
+## 🌎 - https://codemates.ca (Taken down)
 
 A free collabrative live code editor. 
 
